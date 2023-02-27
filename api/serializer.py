@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from api.models import Marker , Event
+from api.models import Marker , Event , Image , Comment
 
 
 
@@ -55,5 +55,24 @@ class MarkerSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
+        fields = '__all__'
+
+class ImageSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='image_id')
+    dataURL = serializers.CharField(source='link')
+    class Meta:
+        model = Image
+        fields = ['id','dataURL']
+
+class ImageEventSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='image_id')
+    dataURL = serializers.CharField(source='link')
+    class Meta:
+        model = Image
+        fields = ['id','dataURL']
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
         fields = '__all__'
     

@@ -88,8 +88,17 @@ class Event(models.Model):
         managed = False
         db_table = 'event'
 
+ 
+class ImageEvent(models.Model):
+    image_id = models.AutoField(primary_key=True)
+    event = models.ForeignKey('Event', models.DO_NOTHING)
+    link = models.TextField(blank=True, null=True)
 
+    objects = AndroidDatabaseManager()
 
+    class Meta:
+        managed = False
+        db_table = 'image_event'
 
 
 class Image(models.Model):
