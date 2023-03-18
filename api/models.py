@@ -221,3 +221,35 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'user'
+
+
+class ReportEvent(models.Model):
+    report_event_id = models.AutoField(primary_key=True)
+    event = models.ForeignKey(Event, models.DO_NOTHING)
+    reason = models.CharField(max_length=255, blank=True, null=True)
+    details = models.CharField(max_length=450, blank=True, null=True)
+    created_user = models.ForeignKey('User', models.DO_NOTHING, db_column='created_user')
+    created_time = models.DateTimeField(blank=True, null=True)
+    enable = models.IntegerField(blank=True, null=True)
+
+    objects = AndroidDatabaseManager()
+
+    class Meta:
+        managed = False
+        db_table = 'report_event'
+
+
+class ReportMarker(models.Model):
+    report_marker_id = models.AutoField(primary_key=True)
+    id = models.ForeignKey(Marker, models.DO_NOTHING, db_column='id')
+    reason = models.CharField(max_length=255, blank=True, null=True)
+    details = models.CharField(max_length=450, blank=True, null=True)
+    created_user = models.ForeignKey('User', models.DO_NOTHING, db_column='created_user')
+    created_time = models.DateTimeField(blank=True, null=True)
+    enable = models.IntegerField(blank=True, null=True)
+
+    objects = AndroidDatabaseManager()
+
+    class Meta:
+        managed = False
+        db_table = 'report_marker'
