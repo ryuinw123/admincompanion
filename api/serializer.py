@@ -78,6 +78,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ReportMarkerSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = ReportMarker
         fields = '__all__'

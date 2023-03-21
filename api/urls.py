@@ -21,6 +21,8 @@ urlpatterns = [
     path('uploadImagesEvent/', views.ImageEventUploadView.as_view(),
          name="image_event_create"),
     path('report/', views.ReportListView.as_view(), name='report'),
+    path('updatemarkerreport/<int:report_marker_id>',views.ReportMarkerUpdateAPIView.as_view(),name = "update_marker_report"),
+    path('updateeventreport/<int:report_event_id>',views.ReportEventUpdateAPIView.as_view(),name = "update_event_report"),
     path('destroyComment/<int:comment_id>/',
          views.CommentDestroyAPIView.as_view(), name='comment_destroy'),
     path('destroyImage/<int:image_id>/',

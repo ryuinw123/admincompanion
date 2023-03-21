@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
-from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, MarkerSerializer, EventSerializer, ImageSerializer, CommentSerializer, ImageEventSerializer, ReportMarkerSerializer, ReportEventSerializer
+from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, MarkerSerializer, EventSerializer, ImageSerializer, CommentSerializer, ImageEventSerializer,ReportMarkerSerializer , ReportEventSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -67,15 +67,15 @@ class EventListView(generics.ListAPIView):
 
 class ReportListView(APIView):
     def get(self, request):
-        markers = ReportMarker.objects.filter(enable=1)
-        events = ReportEvent.objects.filter(enable=1)
-        serialized_markers = ReportMarkerSerializer(markers).data
-        serialized_events = ReportEventSerializer(events).data
-        data = {
-            'markers': serialized_markers,
-            'events': serialized_events,
-        }
-        return Response(data)
+        markers = ReportMarker.objects.filter(enable=1).order_by('-created_time')
+        events = ReportEvent.objects.filter(enable=1).order_by('-created_time')
+        serialized_reports = []
+        for marker in markers:
+            serialized_reports.append(ReportMarkerSerializer(marker).data)
+        for event in events:
+            serialized_reports.append(ReportEventSerializer(event).data)
+        sorted_reports = sorted(serialized_reports, key=lambda report: report['created_time'], reverse=True)
+        return Response(sorted_reports)
 
 
 class MarkerUpdateView(generics.UpdateAPIView):
@@ -189,6 +189,28 @@ class ImageEventUploadView(generics.CreateAPIView):
         os.remove(settings.MEDIA_ROOT + tmp_file)
 
         return Response(serializer.data)
+
+class ReportMarkerUpdateAPIView(generics.UpdateAPIView):
+    queryset = ReportMarker.objects.all()
+    serializer_class = ReportMarkerSerializer
+
+    def update(self, request, *args, **kwargs ,):
+        report_marker_id = kwargs.get('report_marker_id')
+        report_marker = ReportMarker.objects.get(report_marker_id=report_marker_id)
+        report_marker.enable = 0
+        report_marker.save()
+        return Response(status=status.HTTP_200_OK)
+
+class ReportEventUpdateAPIView(generics.UpdateAPIView):
+    queryset = ReportEvent.objects.all()
+    serializer_class = ReportEventSerializer
+
+    def update(self, request, *args, **kwargs ,):
+        report_event_id = kwargs.get('report_event_id')
+        report_event_id = ReportEvent.objects.get(report_event_id=report_event_id)
+        report_event_id.enable = 0
+        report_event_id.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

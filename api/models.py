@@ -1,8 +1,7 @@
 from django.db import models
 from api.managers import AndroidDatabaseManager
-    
-# Create your models here.
 
+# Create your models here.
 
 
 class Admin(models.Model):
@@ -17,7 +16,8 @@ class Admin(models.Model):
 
 
 class Bookmark(models.Model):
-    bookmark_student = models.OneToOneField('User', models.DO_NOTHING, primary_key=True)
+    bookmark_student = models.OneToOneField(
+        'User', models.DO_NOTHING, primary_key=True)
     bookmark_marker = models.ForeignKey('Marker', models.DO_NOTHING)
     createtime = models.DateTimeField(blank=True, null=True)
 
@@ -32,8 +32,10 @@ class Bookmark(models.Model):
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
     content = models.TextField(blank=True, null=True)
-    comment_marker = models.ForeignKey('Marker', models.DO_NOTHING, blank=True, null=True)
-    comment_student = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    comment_marker = models.ForeignKey(
+        'Marker', models.DO_NOTHING, blank=True, null=True)
+    comment_student = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
@@ -44,9 +46,11 @@ class Comment(models.Model):
 
 
 class CommentLike(models.Model):
-    cl_comment = models.OneToOneField(Comment, models.DO_NOTHING, primary_key=True)
+    cl_comment = models.OneToOneField(
+        Comment, models.DO_NOTHING, primary_key=True)
     cl_student = models.ForeignKey('User', models.DO_NOTHING)
-    islike = models.IntegerField(db_column='isLike', blank=True, null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    islike = models.IntegerField(db_column='isLike', blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
@@ -61,7 +65,8 @@ class Emergency(models.Model):
     contact_id = models.AutoField(primary_key=True)
     contact_number = models.CharField(max_length=45, blank=True, null=True)
     contact_name = models.CharField(max_length=45, blank=True, null=True)
-    contact_admin_username = models.ForeignKey(Admin, models.DO_NOTHING, db_column='contact_admin_username', blank=True, null=True)
+    contact_admin_username = models.ForeignKey(
+        Admin, models.DO_NOTHING, db_column='contact_admin_username', blank=True, null=True)
     createdtime = models.DateTimeField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
@@ -78,7 +83,8 @@ class Event(models.Model):
     starttime = models.DateTimeField(blank=True, null=True)
     endtime = models.DateTimeField(blank=True, null=True)
     polygon = models.TextField(blank=True, null=True)
-    student = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    student = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
 
@@ -88,7 +94,7 @@ class Event(models.Model):
         managed = False
         db_table = 'event'
 
- 
+
 class ImageEvent(models.Model):
     image_id = models.AutoField(primary_key=True)
     event = models.ForeignKey('Event', models.DO_NOTHING)
@@ -113,16 +119,19 @@ class Image(models.Model):
         db_table = 'image'
 
 
-
 class Issue(models.Model):
     issue_id = models.AutoField(primary_key=True)
     description = models.TextField(blank=True, null=True)
     imageurl = models.TextField(blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
-    issue_user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    issue_marker = models.ForeignKey('Marker', models.DO_NOTHING, blank=True, null=True)
-    issue_approve_admin_username = models.ForeignKey(Admin, models.DO_NOTHING, db_column='issue_approve_admin_username',related_name='issue_approve_admin_username', blank=True, null=True)
-    issue_broadcast_admin_username = models.ForeignKey(Admin, models.DO_NOTHING, db_column ='issue_broadcast_admin_username',related_name='issue_broadcast_admin_username', blank=True, null=True)
+    issue_user = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True)
+    issue_marker = models.ForeignKey(
+        'Marker', models.DO_NOTHING, blank=True, null=True)
+    issue_approve_admin_username = models.ForeignKey(
+        Admin, models.DO_NOTHING, db_column='issue_approve_admin_username', related_name='issue_approve_admin_username', blank=True, null=True)
+    issue_broadcast_admin_username = models.ForeignKey(
+        Admin, models.DO_NOTHING, db_column='issue_broadcast_admin_username', related_name='issue_broadcast_admin_username', blank=True, null=True)
     broadcasttime = models.DateTimeField(blank=True, null=True)
     approvetime = models.DateTimeField(blank=True, null=True)
 
@@ -132,18 +141,21 @@ class Issue(models.Model):
         managed = False
         db_table = 'issue'
 
-    
+
 class Marker(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     place = models.CharField(max_length=255, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
-    latitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
+    latitude = models.DecimalField(
+        max_digits=11, decimal_places=8, blank=True, null=True)
+    longitude = models.DecimalField(
+        max_digits=11, decimal_places=8, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     type = models.CharField(max_length=45, blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
-    created_user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    created_user = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True)
 
     objects = AndroidDatabaseManager()
 
@@ -153,7 +165,8 @@ class Marker(models.Model):
 
 
 class MarkerLike(models.Model):
-    markerlike_student = models.OneToOneField('User', models.DO_NOTHING, primary_key=True)
+    markerlike_student = models.OneToOneField(
+        'User', models.DO_NOTHING, primary_key=True)
     markerlike_marker = models.ForeignKey(Marker, models.DO_NOTHING)
     createtime = models.DateTimeField(blank=True, null=True)
 
@@ -171,8 +184,10 @@ class News(models.Model):
     body = models.TextField(blank=True, null=True)
     imageurl = models.TextField(blank=True, null=True)
     createdtime = models.DateTimeField(blank=True, null=True)
-    n_created_admin_username = models.ForeignKey(Admin, models.DO_NOTHING, db_column='n_created_admin_username',related_name='n_created_admin_username', blank=True, null=True)
-    n_broadcast_admin_username = models.ForeignKey(Admin, models.DO_NOTHING, db_column="n_broadcast_admin_username",related_name ='n_broadcast_admin_username', blank=True, null=True)
+    n_created_admin_username = models.ForeignKey(
+        Admin, models.DO_NOTHING, db_column='n_created_admin_username', related_name='n_created_admin_username', blank=True, null=True)
+    n_broadcast_admin_username = models.ForeignKey(
+        Admin, models.DO_NOTHING, db_column="n_broadcast_admin_username", related_name='n_broadcast_admin_username', blank=True, null=True)
     broadcasttime = models.DateTimeField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
@@ -182,10 +197,10 @@ class News(models.Model):
         db_table = 'news'
 
 
-
 class Permission(models.Model):
     permission_id = models.AutoField(primary_key=True)
-    permission_student = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    permission_student = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
@@ -196,8 +211,10 @@ class Permission(models.Model):
 
 
 class PermissionMarker(models.Model):
-    pm_permission = models.OneToOneField(Permission, models.DO_NOTHING, primary_key=True)
-    pm_maker = models.ForeignKey(Marker, models.DO_NOTHING, blank=True, null=True)
+    pm_permission = models.OneToOneField(
+        Permission, models.DO_NOTHING, primary_key=True)
+    pm_maker = models.ForeignKey(
+        Marker, models.DO_NOTHING, blank=True, null=True)
 
     objects = AndroidDatabaseManager()
 
@@ -228,7 +245,8 @@ class ReportEvent(models.Model):
     event = models.ForeignKey(Event, models.DO_NOTHING)
     reason = models.CharField(max_length=255, blank=True, null=True)
     details = models.CharField(max_length=450, blank=True, null=True)
-    created_user = models.ForeignKey('User', models.DO_NOTHING, db_column='created_user')
+    created_user = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True,db_column='created_user')
     created_time = models.DateTimeField(blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
 
@@ -241,10 +259,11 @@ class ReportEvent(models.Model):
 
 class ReportMarker(models.Model):
     report_marker_id = models.AutoField(primary_key=True)
-    id = models.ForeignKey(Marker, models.DO_NOTHING, db_column='id')
+    id = models.ForeignKey(Marker, models.DO_NOTHING, blank=True, null=True , db_column="id")
     reason = models.CharField(max_length=255, blank=True, null=True)
     details = models.CharField(max_length=450, blank=True, null=True)
-    created_user = models.ForeignKey('User', models.DO_NOTHING, db_column='created_user')
+    created_user = models.ForeignKey(
+        'User', models.DO_NOTHING, blank=True, null=True,db_column='created_user')
     created_time = models.DateTimeField(blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
 
