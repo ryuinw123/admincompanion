@@ -3,18 +3,19 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
-from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, MarkerSerializer, EventSerializer, ImageSerializer, CommentSerializer, ImageEventSerializer,ReportMarkerSerializer , ReportEventSerializer
+from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, MarkerSerializer, EventSerializer, ImageSerializer, CommentSerializer, ImageEventSerializer,ReportMarkerSerializer , ReportEventSerializer , EventURLSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from api.models import Marker, Event, Image, Comment, ImageEvent, ReportEvent, ReportMarker
+from api.models import Marker, Event, Image, Comment, ImageEvent, ReportEvent, ReportMarker , EventUrl
 from rest_framework.views import APIView
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
 import os
+from django.db import connection
 
 # Create your views here.
 
@@ -98,9 +99,24 @@ class EventUpdateView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         event_id = kwargs.get('pk')
         event = self.get_object()
+        print(request.data)
         serializer = self.get_serializer(event, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+
+        eventtype = request.data.get('event_type')
+
+        print("Eventtype = " , eventtype)
+
+        if eventtype == '1':
+            url = request.data.get('url')
+            print("url = " , url)
+            event_url, created = EventUrl.objects.get_or_create(event_url=event)
+            event_url.url = url
+            event_url.save()
+        elif eventtype == '0':
+            EventUrl.objects.filter(event_url=event).delete()
+
         return Response(serializer.data)
 
 
@@ -122,14 +138,20 @@ class ShowMarkerDetail(APIView):
 
 class ShowEventDetail(APIView):
     def get(self, request, id):
-        marker_data = Event.objects.filter(event_id=id).first()
+        event_data = Event.objects.filter(event_id=id).first()
         images_data = ImageEvent.objects.filter(event_id=id)
-        serialized_event = EventSerializer(marker_data).data
+        eventUrl_data = EventUrl.objects.filter(event_url = id).first()
+        
+        serialized_event = EventSerializer(event_data).data
         serialized_image = ImageEventSerializer(images_data, many=True).data
+        serialized_url = EventURLSerializer(eventUrl_data).data
+
+        serialized_event.update(serialized_url)
         data = {
             'event': serialized_event,
             'images': serialized_image,
         }
+        
         return Response(data)
 
 

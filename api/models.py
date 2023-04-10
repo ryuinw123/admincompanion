@@ -87,12 +87,23 @@ class Event(models.Model):
         'User', models.DO_NOTHING, blank=True, null=True)
     createtime = models.DateTimeField(blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
+    event_type = models.IntegerField(blank=True, null=True)
 
     objects = AndroidDatabaseManager()
 
     class Meta:
         managed = False
         db_table = 'event'
+
+class EventUrl(models.Model):
+    event_url = models.OneToOneField(Event, models.DO_NOTHING, primary_key=True)
+    url = models.TextField(blank=True, null=True)
+
+    objects = AndroidDatabaseManager()
+
+    class Meta:
+        managed = False
+        db_table = 'event_url'
 
 
 class ImageEvent(models.Model):

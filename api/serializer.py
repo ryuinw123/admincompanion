@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from api.models import Marker , Event , Image , Comment , ReportEvent , ReportMarker
+from api.models import Marker , Event , Image , Comment , ReportEvent , ReportMarker , EventUrl
 
 
 
@@ -55,6 +55,11 @@ class MarkerSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
+        fields = '__all__'
+
+class EventURLSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventUrl
         fields = '__all__'
 
 class ImageSerializer(serializers.ModelSerializer):
