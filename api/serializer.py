@@ -23,18 +23,22 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password])
+        write_only=True, required=True,) #validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
+    secret = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2')
+        fields = ('username', 'password', 'password2','secret')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError(
                 {"password": "Password fields didn't match."})
-
+        secret = attrs["secret"]
+        if secret != 'secret':
+            raise serializers.ValidationError(
+                {"secret": "Invalid secret code."})
         return attrs
 
     def create(self, validated_data):
