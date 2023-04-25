@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
+from PIL import Image as PILImage
 import os
 from django.db import connection
 
@@ -167,6 +168,17 @@ class ImageUploadView(generics.CreateAPIView):
         path = default_storage.save(f'tmp/image.png', ContentFile(file.read()))
         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
 
+
+        # Resize the image and save
+        image = PILImage.open(tmp_file)
+        new_size = (300, 400)
+        resized_image = image.resize(new_size)
+        os.remove(settings.MEDIA_ROOT + tmp_file)
+        resized_image.save(os.path.join(settings.MEDIA_ROOT, path))
+        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+        
+        
+
         # Upload the image to OwnCloud server
         index = kwargs.get('image_id', None)
         if index is None:
@@ -194,6 +206,14 @@ class ImageEventUploadView(generics.CreateAPIView):
 
         # Save the image to default storage
         path = default_storage.save(f'tmp/image.png', ContentFile(file.read()))
+        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+
+        # Resize the image and save
+        image = PILImage.open(tmp_file)
+        new_size = (300, 400)
+        resized_image = image.resize(new_size)
+        os.remove(settings.MEDIA_ROOT + tmp_file)
+        resized_image.save(os.path.join(settings.MEDIA_ROOT, path))
         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
 
         # Upload the image to OwnCloud server
